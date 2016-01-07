@@ -139,7 +139,7 @@ function replaceGraphiteWebClusterServersSettings ( )
 		else
 			# TODO add further checking in future
 			# substitute values in substitution in the /etc/graphite/local_settings.py
-			sed -i "/CLUSTER_SERVERS = /c\\${HERA_GRAPHITE_WEB_CLUSTER_SERVERS}" /etc/graphite/local_settings.py
+			sed -i "/CLUSTER_SERVERS = /c\CLUSTER_SERVERS = ${HERA_GRAPHITE_WEB_CLUSTER_SERVERS}" /etc/graphite/local_settings.py
 			#TODO-test# sed -i "/CLUSTER_SERVERS = /c\CLUSTER_SERVERS = ${HERA_GRAPHITE_WEB_CLUSTER_SERVERS}" etc_graphite_web/local_settings.py	
 		fi
 	fi	
@@ -155,8 +155,8 @@ function replaceGraphiteWebCarbonLinkHostsWithEtcHosts ( )
 	logInfo "calling replaceGraphiteWebCarbonLinkHostsWithEtcHosts" 
 	
 	# read the list of carboncache links from the /etc/hosts, removing the lines wiht _1 at the end.
-	va_etchosts_carboncache_links=($(cat /etc/hosts | grep carboncache | awk {'print $2'} | grep -v '_1$'))
-	#TODO-test# va_etchosts_carboncache_links=($(cat etc_hosts/hosts.txt | grep carboncache | awk {'print $2'} | grep -v '_1$'))
+	va_etchosts_carboncache_links=($(cat /etc/hosts | awk {'print $2'} | grep ^carboncache | grep -v '_1$' | sort))
+	#TODO-test# va_etchosts_carboncache_links=($(cat etc_hosts/hosts.txt | awk {'print $2'} | grep ^carboncache | grep -v '_1$' | sort))
 
 	#  create the new CARBONLINK_HOSTS to be set in graphite-web\local_settings.py file  based on the carboncache links found
 	# echo "number of elements ${#va_etchosts_carboncache_links[@]}"
